@@ -6,6 +6,7 @@ import personal.model.User;
 import java.util.List;
 
 public class UserController {
+    private final Validat valid = new Validat();
     private final Repository repository;
 
     public UserController(Repository repository) {
@@ -13,6 +14,7 @@ public class UserController {
     }
 
     public void saveUser(User user) {
+        valid.validate(user);
         repository.CreateUser(user);
     }
 
@@ -24,6 +26,25 @@ public class UserController {
             }
         }
 
+        throw new Exception("User not found");
+    }
+
+    public List<User> allUsers() {
+        return repository.getAllUsers();
+    }
+    public void  updateUser(User user){
+        valid.validate(user);
+        repository.UpdateUser(user);
+    }
+
+    public void deleteUser(String userId) throws Exception{
+        List<User> users = repository.getAllUsers();
+        for (User user : users) {
+            if (user.getId().equals(userId)) {
+                repository.deleteUser(userId);
+                return;
+            }
+        }
         throw new Exception("User not found");
     }
 }
